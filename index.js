@@ -36,19 +36,35 @@ board.on('ready', () => {
         // strip.show();
         strip.off();
 
-        schedule.scheduleJob('55 * * * *', () => {
-            strip.color('#FFCA7C');
-            strip.show();
+        schedule.scheduleJob('40 * * * *', () => {
+            const lighting = {
+                start: [0, 0, 0], // #FFCA7C
+                end: [255, 202, 124],
+                steps: 120, // * 0.5 = the amount of seconds
+                stepsCompleted: 0,
+            };
 
-            // Turn back off after a minute
-            setTimeout(() => {
-                strip.off();
-            }, 60 * 1000)
+            const sunrise = setInterval(() => {
+                if (lighting.steps > lighting.stepsCompleted) {
+
+                    lighting.start.forEach((item, index, array) => {
+                        array[index] += Math.floor(((lighting.end[index] - item) / lighting.steps - 1) * lighting.stepsCompleted);
+                    });
+
+                    strip.color(lighting.start);
+                    strip.show();
+
+                    lighting.stepsCompleted++;
+                } else {
+                    clearInterval(sunrise);
+                    strip.off();
+                }
+            }, 500);
+        });
+
+        process.on('SIGINT', () => {
+            console.log(strip);
+            strip.off();
         });
     })
-});
-
-process.on('SIGINT', () => {
-    console.log(strip);
-    strip.off();
 });
