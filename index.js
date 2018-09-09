@@ -36,7 +36,7 @@ board.on('ready', () => {
         // strip.show();
         strip.off();
 
-        schedule.scheduleJob('40 * * * *', () => {
+        schedule.scheduleJob('45 * * * *', () => {
             const lighting = {
                 start: [0, 0, 0], // #FFCA7C
                 end: [255, 202, 124],
