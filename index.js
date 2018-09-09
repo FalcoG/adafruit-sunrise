@@ -30,14 +30,14 @@ board.on('ready', () => {
         strip.off();
 
         schedule.scheduleJob('46 * * * *', () => {
-            let i;
+            let i = 0;
             const iterations = 120;
 
             const sunrise = setInterval(() => {
                 if (iterations > i) {
                     i++;
 
-                    strip.color(Color('#FFCA7C').darken(i / iterations).rgb().array());
+                    strip.color(Color('#FFCA7C').darken((iterations - i) / iterations).rgb().round().array());
                     strip.show();
                 } else {
                     clearInterval(sunrise);
