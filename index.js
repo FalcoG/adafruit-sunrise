@@ -8,6 +8,11 @@ const options = {
     quantity: 121
 };
 
+const board = new five.Board({
+    port: options.port,
+    repl: false
+});
+
 board.on('ready', () => {
     console.log('Arduino ready');
 
