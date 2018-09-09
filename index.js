@@ -2,7 +2,6 @@ const five = require('johnny-five');
 const pixel = require('node-pixel');
 
 const options = {
-    port: 'COM4',
     pin: 5,
     startPoint: 12,
     quantity: 121
@@ -24,13 +23,20 @@ board.on('ready', () => {
     });
 
     strip.on('ready', () => {
-        console.log('Led strip PIN5 ready');
+        console.log('Led strip ready');
 
-        for(let i = 0; i < this.options.quantity - this.options.startPoint; i++) {
-            const pixelNumber = i + this.options.startPoint;
-            const currentPixel = this.strip.pixel(pixelNumber);
+        for(let i = 0; i < options.quantity - options.startPoint; i++) {
+            const pixelNumber = i + options.startPoint;
+            const currentPixel = strip.pixel(pixelNumber);
 
-            currentPixel.color('#FF0000');
+            currentPixel.color('#FFFFFF');
         }
+
+        strip.show();
     })
+});
+
+process.on('SIGINT', () => {
+    console.log(strip);
+    strip.off();
 });
