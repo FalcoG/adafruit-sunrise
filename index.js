@@ -29,7 +29,7 @@ board.on('ready', () => {
 
         strip.off();
 
-        schedule.scheduleJob('46 * * * *', () => {
+        schedule.scheduleJob('55 6 * * *', () => {
             let i = 0;
             const iterations = 120;
 
@@ -37,7 +37,7 @@ board.on('ready', () => {
                 if (iterations > i) {
                     i++;
 
-                    strip.color(Color('#FFCA7C').darken((iterations - i) / iterations).rgb().round().array());
+                    strip.color('#' + Color('#FFCA7C').darken((iterations - i) / iterations).rgbNumber().toString(16));
                     strip.show();
                 } else {
                     clearInterval(sunrise);
