@@ -1,6 +1,7 @@
 const five = require('johnny-five');
 const pixel = require('node-pixel');
 const schedule = require('node-schedule');
+const Color = require('color');
 
 const options = {
     pin: 5,
@@ -26,35 +27,18 @@ board.on('ready', () => {
     strip.on('ready', () => {
         console.log('Led strip ready');
 
-        // for(let i = 0; i < options.quantity - options.startPoint; i++) {
-        //     const pixelNumber = i + options.startPoint;
-        //     const currentPixel = strip.pixel(pixelNumber);
-        //
-        //     currentPixel.color('#00003E');
-        // }
-        //
-        // strip.show();
         strip.off();
 
-        schedule.scheduleJob('45 * * * *', () => {
-            const lighting = {
-                start: [0, 0, 0], // #FFCA7C
-                end: [255, 202, 124],
-                steps: 120, // * 0.5 = the amount of seconds
-                stepsCompleted: 0,
-            };
+        schedule.scheduleJob('46 * * * *', () => {
+            let i;
+            const iterations = 120;
 
             const sunrise = setInterval(() => {
-                if (lighting.steps > lighting.stepsCompleted) {
+                if (iterations > i) {
+                    i++;
 
-                    lighting.start.forEach((item, index, array) => {
-                        array[index] += Math.floor(((lighting.end[index] - item) / lighting.steps - 1) * lighting.stepsCompleted);
-                    });
-
-                    strip.color(lighting.start);
+                    strip.color(Color('#FFCA7C').darken(i / iterations).rgb().array());
                     strip.show();
-
-                    lighting.stepsCompleted++;
                 } else {
                     clearInterval(sunrise);
                     strip.off();
