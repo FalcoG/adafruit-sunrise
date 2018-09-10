@@ -27,7 +27,7 @@ board.on('ready', () => {
     strip.on('ready', () => {
         strip.off();
 
-        schedule.scheduleJob('55 9 * * *', () => {
+        schedule.scheduleJob('55 6 * * *', () => {
             let i = 0;
             const iterations = 600;
 
