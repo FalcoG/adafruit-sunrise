@@ -25,19 +25,17 @@ board.on('ready', () => {
     });
 
     strip.on('ready', () => {
-        console.log('Led strip ready');
-
         strip.off();
 
-        schedule.scheduleJob('55 6 * * *', () => {
+        schedule.scheduleJob('55 9 * * *', () => {
             let i = 0;
-            const iterations = 120;
+            const iterations = 600;
 
             const sunrise = setInterval(() => {
                 if (iterations > i) {
                     i++;
-
-                    strip.color('#' + Color('#FFCA7C').darken((iterations - i) / iterations).rgbNumber().toString(16));
+                    const modifiedColor = Color('#FFCA7C').darken((iterations - i) / iterations);
+                    strip.color(`rgb(${Math.round(modifiedColor.red())}, ${Math.round(modifiedColor.green())}, ${Math.round(modifiedColor.blue())})`);
                     strip.show();
                 } else {
                     clearInterval(sunrise);
