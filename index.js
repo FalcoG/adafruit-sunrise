@@ -2,6 +2,9 @@ const five = require('johnny-five');
 const pixel = require('node-pixel');
 const schedule = require('node-schedule');
 const Color = require('color');
+const https = require('https');
+const SunCalc = require('suncalc');
+const IFTTT = require('./.ifttt.js');
 
 const options = {
     pin: 5,
@@ -27,7 +30,24 @@ board.on('ready', () => {
     strip.on('ready', () => {
         strip.off();
 
-        schedule.scheduleJob('55 6 * * *', () => {
+        // Assumes that the device is using UTC and not CE(S)T
+        schedule.scheduleJob('55 4 * * *', () => {
+            const times = SunCalc.getTimes(new Date(), 52.011257, 4.4392069);
+
+            https.get(`https://maker.ifttt.com/trigger/rpiSunriseStart/with/key/${IFTTT.key}?value1=LED strip is turning on&value2=Today's sunrise is at ${times.sunrise.toLocaleString('nl-NL')}`, (res) => {
+                const { statusCode } = res;
+
+                let error;
+                if (statusCode !== 200) error = new Error(`Request Failed.\nStatus Code: ${statusCode}`);
+
+                if (error) {
+                    console.error(error.message);
+                    res.resume();
+                }
+            }).on('error', (e) => {
+                console.error(`Got an error: ${e.message}`);
+            });
+
             let i = 0;
             const iterations = 600;
 
