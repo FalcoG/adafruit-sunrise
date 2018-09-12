@@ -1,5 +1,7 @@
 const config = {
-    key: 'REPLACEME'
+    key: 'REPLACEME',
+    locale: 'nl',
+    timeZone: 'Europe/Amsterdam'
 }
 
 module.exports = config;

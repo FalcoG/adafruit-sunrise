@@ -14,6 +14,8 @@
     "cron": "^1.4.1",
     "firmata": "^0.19.1",
     "johnny-five": "^1.0.0",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.21",
     "node-pixel": "^0.10.0",
     "suncalc": "^1.8.0"
   }

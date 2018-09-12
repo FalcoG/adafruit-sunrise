@@ -4,7 +4,10 @@ const cron = require('cron');
 const Color = require('color');
 const https = require('https');
 const SunCalc = require('suncalc');
+const moment = require('moment-timezone');
 const IFTTT = require('./.ifttt.js');
+
+moment.locale(IFTTT.locale);
 
 const options = {
     pin: 5,
@@ -30,11 +33,10 @@ board.on('ready', () => {
     strip.on('ready', () => {
         strip.off();
 
-        // Assumes that the device is using UTC and not CE(S)T
         new cron.CronJob('0 55 6 * * *', () => {
             const times = SunCalc.getTimes(new Date(), 52.011257, 4.4392069);
 
-            https.get(encodeURI(`https://maker.ifttt.com/trigger/rpiSunriseStart/with/key/${IFTTT.key}?value1=LED strip is turning on&value2=Today's sunrise is at ${times.sunrise.toLocaleString('nl-NL')}`), (res) => {
+            https.get(encodeURI(`https://maker.ifttt.com/trigger/rpiSunriseStart/with/key/${IFTTT.key}?value1=LED strip is turning on&value2=Today's sunrise is at ${moment(times.sunrise).tz(IFTTT.timeZone).format('LTS')}`), (res) => {
                 const { statusCode } = res;
 
                 let error;
@@ -59,10 +61,23 @@ board.on('ready', () => {
                     strip.show();
                 } else {
                     clearInterval(sunrise);
-                    strip.off();
+
+                    setTimeout(() => {
+                        const sundown = setInterval(() => {
+                            if (i > 0) {
+                                i--;
+                                const modifiedColor = Color('#FFCA7C').darken((iterations - i) / iterations);
+                                strip.color(`rgb(${Math.round(modifiedColor.red())}, ${Math.round(modifiedColor.green())}, ${Math.round(modifiedColor.blue())})`);
+                                strip.show();
+                            } else {
+                                clearInterval(sundown);
+                                strip.off();
+                            }
+                        }, 500);
+                    }, 60000); // Keep the LED on for about a minute
                 }
             }, 500);
-        }, null, true, 'Europe/Amsterdam');
+        }, null, true, IFTTT.timeZone);
 
         process.on('SIGINT', () => {
             console.log(strip);
