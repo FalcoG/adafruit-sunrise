@@ -1,6 +1,6 @@
 const five = require('johnny-five');
 const pixel = require('node-pixel');
-const schedule = require('node-schedule');
+const cron = require('cron');
 const Color = require('color');
 const https = require('https');
 const SunCalc = require('suncalc');
@@ -31,10 +31,10 @@ board.on('ready', () => {
         strip.off();
 
         // Assumes that the device is using UTC and not CE(S)T
-        schedule.scheduleJob('55 4 * * *', () => {
+        new cron.CronJob('0 55 6 * * *', () => {
             const times = SunCalc.getTimes(new Date(), 52.011257, 4.4392069);
 
-            https.get(`https://maker.ifttt.com/trigger/rpiSunriseStart/with/key/${IFTTT.key}?value1=LED strip is turning on&value2=Today's sunrise is at ${times.sunrise.toLocaleString('nl-NL')}`, (res) => {
+            https.get(encodeURI(`https://maker.ifttt.com/trigger/rpiSunriseStart/with/key/${IFTTT.key}?value1=LED strip is turning on&value2=Today's sunrise is at ${times.sunrise.toLocaleString('nl-NL')}`), (res) => {
                 const { statusCode } = res;
 
                 let error;
@@ -62,7 +62,7 @@ board.on('ready', () => {
                     strip.off();
                 }
             }, 500);
-        });
+        }, null, true, 'Europe/Amsterdam');
 
         process.on('SIGINT', () => {
             console.log(strip);
