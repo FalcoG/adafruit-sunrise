@@ -3,4 +3,4 @@ const app = express()
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
-app.listen(1338, () => console.log('Example app listening on port 1338!'))
+app.listen(3000, 'localhost', () => console.log('Example app listening locally on port 3000!'))
