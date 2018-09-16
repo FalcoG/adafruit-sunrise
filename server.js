@@ -21,7 +21,7 @@ app.use('/api/v1', require('./api/v1'))
 new led(5, 121).then(strip => {
     app.set('led_strip', strip)
 
-    app.listen(3000, () => console.log('Example app listening locally on port 3000!'))
+    app.listen(3000, 'localhost', () => console.log('Example app listening locally on port 3000!'))
 }).catch(e => {
     console.log(e);
 })

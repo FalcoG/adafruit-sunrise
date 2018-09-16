@@ -14,7 +14,7 @@ API.get('/users', (req, res) => {
 API.get('/led/toggle', (req, res) => {
     const strip = req.app.get('led_strip')
 
-    if (strip.color().hexcode === '#FFFFFF') {
+    if (strip.pixel(0).color().hexcode === '#FFFFFF') {
         strip.off()
     } else {
         strip.color('#FFFFFF')
